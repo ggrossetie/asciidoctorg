@@ -1,0 +1,6 @@
+= Asciidoctor.js on the JVM using GraalVM!
+
+This project demonstrate how Asciidoctor.js can be embed in a Java application using the GraalVM Polyglot API.
+
+[caption=Status]
+CAUTION: This project is a _proof of concept_.
