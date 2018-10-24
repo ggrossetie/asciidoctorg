@@ -4,3 +4,20 @@ This project demonstrate how Asciidoctor.js can be embed in a Java application u
 
 [caption=Status]
 CAUTION: This project is a _proof of concept_.
+
+== Build
+
+. Install https://www.graalvm.org/docs/getting-started/#install-graalvm[GraalVM]
+. Install Maven 3.5 or greater
+. Run the following command:
+
+ $ mvn clean install
+
+
+[IMPORTANT]
+====
+Make sure that Maven is using the `java` binary provided by GraalVM.
+You can specify the `JAVA_HOME` environment variable before the `mvn` command:
+
+ $ JAVA_HOME=/path/to/graalvm mvn clean install
+====
