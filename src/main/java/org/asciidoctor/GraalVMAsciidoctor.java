@@ -41,8 +41,7 @@ public class GraalVMAsciidoctor implements Asciidoctor {
 
   @Override
   public String convert(String content, Map<String, Object> options) {
-    // FIXME: Convert options to an JavaScript object
-    Value result = convertFunction.execute(content);
+    Value result = convertFunction.execute(content, options);
     return result.asString();
   }
 }
