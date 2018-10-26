@@ -17,6 +17,40 @@ public interface Asciidoctor {
    */
   String convert(String content, Map<String, Object> options);
 
+  /**
+   * Parse the AsciiDoc source input into an Document and
+   * render it to the specified backend format.
+   * <p>
+   * Accepts input as String object.
+   *
+   * @param content the AsciiDoc source as String.
+   * @param options a Hash of options to control processing (default: {}).
+   * @return the rendered output String is returned
+   */
+  default String convert(String content, Options options) {
+    return convert(content, options.map());
+  }
+
+  /**
+   * Parse the AsciiDoc source input into an Document and
+   * render it to the specified backend format.
+   * <p>
+   * Accepts input as String object.
+   *
+   * @param content the AsciiDoc source as String.
+   * @param options a Hash of options to control processing (default: {}).
+   * @return the rendered output String is returned
+   */
+  default String convert(String content, OptionsBuilder options) {
+    return convert(content, options.asMap());
+  }
+
+  /**
+   * Method that gets the asciidoctor version which is being used..
+   * @return Version number.
+   */
+  String asciidoctorVersion();
+
   final class Factory {
 
     private Factory() {

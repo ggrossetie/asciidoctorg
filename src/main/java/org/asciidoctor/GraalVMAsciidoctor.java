@@ -16,6 +16,7 @@ public class GraalVMAsciidoctor implements Asciidoctor {
 
   private static GraalVMAsciidoctor instance = null;
   private final Value convertFunction;
+  private final Value versionFunction;
 
   private GraalVMAsciidoctor() throws IOException, URISyntaxException {
     Context context = Context.newBuilder("js").allowIO(true).build();
@@ -24,6 +25,7 @@ public class GraalVMAsciidoctor implements Asciidoctor {
     evalJavaScriptResource(context, "asciidoctor.js");
     context.eval("js", "Asciidoctor()"); // init
     convertFunction = evalJavaScriptResource(context, "convert.js");
+    versionFunction = evalJavaScriptResource(context, "version.js");
   }
 
   private static Value evalJavaScriptResource(Context context, String resourceName) throws URISyntaxException, IOException {
@@ -43,5 +45,10 @@ public class GraalVMAsciidoctor implements Asciidoctor {
   public String convert(String content, Map<String, Object> options) {
     Value result = convertFunction.execute(content, options);
     return result.asString();
+  }
+
+  @Override
+  public String asciidoctorVersion() {
+    return versionFunction.execute().asString();
   }
 }
