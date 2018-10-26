@@ -1,0 +1,6 @@
+language: java
+
+before_script:
+- ./travis-install-graalvm.sh
+
+script: JAVA_HOME=./graalvm mvn test -B
