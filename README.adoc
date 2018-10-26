@@ -1,5 +1,9 @@
 = Asciidoctor.js on the JVM using GraalVM!
 
+ifdef::env-github[]
+image:https://img.shields.io/travis/Mogztter/asciidoctorG/master.svg[Travis build status, link=https://travis-ci.org/Mogztter/asciidoctorG]
+endif::[]
+
 This project demonstrate how Asciidoctor.js can be embed in a Java application using the GraalVM Polyglot API.
 
 [caption=Status]
