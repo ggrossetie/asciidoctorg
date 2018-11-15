@@ -15,17 +15,14 @@ import java.util.Objects;
 public class GraalVMAsciidoctor implements Asciidoctor {
 
   private static GraalVMAsciidoctor instance = null;
-  private final Value convertFunction;
-  private final Value versionFunction;
+  private final Value asciidoctor;
 
   private GraalVMAsciidoctor() throws IOException, URISyntaxException {
     Context context = Context.newBuilder("js").allowIO(true).build();
     context.getPolyglotBindings().putMember("IncludeResolver", new GraalVMIncludeResolver());
     context.eval("js", "var IncludeResolver = Polyglot.import('IncludeResolver');");
     evalJavaScriptResource(context, "asciidoctor.js");
-    context.eval("js", "Asciidoctor()"); // init
-    convertFunction = evalJavaScriptResource(context, "convert.js");
-    versionFunction = evalJavaScriptResource(context, "version.js");
+    asciidoctor = context.eval("js", "Asciidoctor()"); // init
   }
 
   private static Value evalJavaScriptResource(Context context, String resourceName) throws URISyntaxException, IOException {
@@ -43,12 +40,12 @@ public class GraalVMAsciidoctor implements Asciidoctor {
 
   @Override
   public String convert(String content, Map<String, Object> options) {
-    Value result = convertFunction.execute(content, options);
+    Value result = asciidoctor.getMember("convert").execute(content, options);
     return result.asString();
   }
 
   @Override
   public String asciidoctorVersion() {
-    return versionFunction.execute().asString();
+    return asciidoctor.getMember("getCoreVersion").execute().asString();
   }
 }
