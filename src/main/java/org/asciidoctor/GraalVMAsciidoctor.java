@@ -1,14 +1,13 @@
 package org.asciidoctor;
 
+import org.asciidoctor.extension.JavaExtensionRegistry;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,13 +20,14 @@ public class GraalVMAsciidoctor implements Asciidoctor {
     Context context = Context.newBuilder("js").allowIO(true).build();
     context.getPolyglotBindings().putMember("IncludeResolver", new GraalVMIncludeResolver());
     context.eval("js", "var IncludeResolver = Polyglot.import('IncludeResolver');");
+    context.eval("js", "var ExtensionProcess = Polyglot.import('ExtensionProcess');");
     evalJavaScriptResource(context, "asciidoctor.js");
     asciidoctor = context.eval("js", "Asciidoctor()"); // init
+    evalJavaScriptResource(context, "asciidoctor-graalvm.js");
   }
 
   private static Value evalJavaScriptResource(Context context, String resourceName) throws URISyntaxException, IOException {
-    List<String> lines = Files.readAllLines(Paths.get(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource(resourceName)).toURI()), StandardCharsets.UTF_8);
-    String content = String.join("\n", lines);
+    String content = new String(Files.readAllBytes(Paths.get(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource(resourceName)).toURI())));
     return context.eval("js", content);
   }
 
@@ -45,7 +45,16 @@ public class GraalVMAsciidoctor implements Asciidoctor {
   }
 
   @Override
+  public JavaExtensionRegistry javaExtensionRegistry() {
+    return new GraalVMJavaExtensionRegistry(asciidoctor);
+  }
+
+  @Override
   public String asciidoctorVersion() {
     return asciidoctor.getMember("getCoreVersion").execute().asString();
+  }
+
+  public Value getAsciidoctor() {
+    return asciidoctor;
   }
 }

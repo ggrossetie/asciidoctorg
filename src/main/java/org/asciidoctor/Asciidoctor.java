@@ -1,5 +1,7 @@
 package org.asciidoctor;
 
+import org.asciidoctor.extension.JavaExtensionRegistry;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -46,7 +48,15 @@ public interface Asciidoctor {
   }
 
   /**
+   * Creates an extension registry ready to be used for registering all processors
+   *
+   * @return Extension Registry object.
+   */
+  JavaExtensionRegistry javaExtensionRegistry();
+
+  /**
    * Method that gets the asciidoctor version which is being used..
+   *
    * @return Version number.
    */
   String asciidoctorVersion();
@@ -65,7 +75,7 @@ public interface Asciidoctor {
       try {
         return GraalVMAsciidoctor.create();
       } catch (IOException | URISyntaxException e) {
-        throw new RuntimeException("Unable to instance Asciidoctor GraalVM");
+        throw new RuntimeException("Unable to instantiate Asciidoctor.js");
       }
     }
   }
